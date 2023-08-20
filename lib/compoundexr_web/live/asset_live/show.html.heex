@@ -1,0 +1,33 @@
+<.header>
+  Asset <%= @asset.id %>
+  <:subtitle>This is a asset record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/assets/#{@asset}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit asset</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @asset.name %></:item>
+  <:item title="Balance"><%= @asset.balance %></:item>
+</.list>
+
+<.back navigate={~p"/assets"}>Back to assets</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="asset-modal"
+  show
+  on_cancel={JS.patch(~p"/assets/#{@asset}")}
+>
+  <.live_component
+    module={CompoundexrWeb.AssetLive.FormComponent}
+    id={@asset.id}
+    title={@page_title}
+    action={@live_action}
+    asset={@asset}
+    patch={~p"/assets/#{@asset}"}
+    user_id={@current_user.id}
+  />
+</.modal>
