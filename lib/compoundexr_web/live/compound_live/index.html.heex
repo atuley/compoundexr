@@ -1,0 +1,36 @@
+<.header>
+  Compound Interest Calculator
+</.header>
+<.simple_form
+  for={@form}
+  id="compound-interest-form"
+  phx-change="validate"
+  phx-blur="validate"
+  phx-submit="save"
+>
+  <.input
+    field={@form[:starting_balance]}
+    type="select"
+    prompt="Select asset"
+    options={@asset_options}
+    label="Starting Balance"
+  />
+  <%= @form[:starting_balance].value %>
+  <.input field={@form[:interest_rate]} type="number" label="Annual Return %" />
+  <.input field={@form[:years]} type="number" label="Number of years" />
+  <:actions>
+    <.button phx-disable-with="Calculating...">Calculate</.button>
+  </:actions>
+</.simple_form>
+<%!-- Why does is take a change for the $ to show back up? --%>
+<div :if={@final_balance} class="mt-16 " id="final-balance">
+  <.header>Final Balance:</.header>
+  <%= @final_balance %>
+</div>
+<div :if={@years} class="mt-16">
+  <.header>Compounded Years</.header>
+  <.table id="years" rows={@years}>
+    <:col :let={{_id, year}} label="Year"><%= year.year %></:col>
+    <:col :let={{_id, year}} label="Balance"><%= year.balance %></:col>
+  </.table>
+</div>

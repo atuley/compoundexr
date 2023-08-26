@@ -69,11 +69,13 @@ defmodule CompoundexrWeb.Router do
       live "/assets", AssetLive.Index, :index
       live "/assets/new", AssetLive.Index, :new
       live "/assets/:id/edit", AssetLive.Index, :edit
-
       live "/assets/:id", AssetLive.Show, :show
       live "/assets/:id/show/edit", AssetLive.Show, :edit
+
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/compound", CompoundLive.Index, :index
     end
   end
 

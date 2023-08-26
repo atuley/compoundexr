@@ -20,7 +20,7 @@ defmodule CompoundexrWeb.AssetLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:balance]} type="number" label="Balance" />
+        <.input field={@form[:balance]} label="Balance" />
         <.input field={@form[:user_id]} type="hidden" value={@user_id} />
         <:actions>
           <.button phx-disable-with="Saving...">Save Asset</.button>
