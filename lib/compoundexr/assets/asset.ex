@@ -6,14 +6,14 @@ defmodule Compoundexr.Assets.Asset do
 
   schema "assets" do
     field :name, :string
-    field :balance, :integer
+    field :balance, Money.Ecto.Type
     belongs_to :user, User, type: :binary_id
 
     timestamps()
   end
 
   @doc false
-  def changeset(asset, attrs) do
+  def changeset(asset \\ %__MODULE__{}, attrs) do
     asset
     |> cast(attrs, [:name, :balance, :user_id])
     |> validate_required([:name, :balance, :user_id])

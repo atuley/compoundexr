@@ -2,6 +2,7 @@ defmodule Compoundexr.AssetsTest do
   use Compoundexr.DataCase
   import Compoundexr.AccountsFixtures
   import Compoundexr.AssetsFixtures
+  import Money.Sigils
 
   alias Compoundexr.Assets
 
@@ -28,7 +29,7 @@ defmodule Compoundexr.AssetsTest do
 
       assert {:ok, %Asset{} = asset} = Assets.create_asset(valid_attrs)
       assert asset.name == "some name"
-      assert asset.balance == 42
+      assert asset.balance == ~M[42]
     end
 
     test "create_asset/1 with invalid data returns error changeset" do
@@ -41,7 +42,7 @@ defmodule Compoundexr.AssetsTest do
 
       assert {:ok, %Asset{} = asset} = Assets.update_asset(asset, update_attrs)
       assert asset.name == "some updated name"
-      assert asset.balance == 43
+      assert asset.balance == ~M[43]
     end
 
     test "update_asset/2 with invalid data returns error changeset" do
