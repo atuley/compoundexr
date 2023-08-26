@@ -11,7 +11,8 @@ defmodule CompoundexrWeb.CompoundLive.Index do
      |> assign_changeset(Compound.change_calculation_data(%{interest_rate: 0, years: 1}))
      |> assign_form()
      |> assign_asset_options()
-     |> assign(final_balance: nil)}
+     |> assign(final_balance: nil)
+     |> assign(years: nil)}
   end
 
   @impl true
@@ -47,7 +48,7 @@ defmodule CompoundexrWeb.CompoundLive.Index do
   def handle_event("save", %{"calculation_data" => params}, socket) do
     case Compound.calculate(params) do
       {:ok, result} ->
-        {:noreply, assign(socket, final_balance: result.final_balance)}
+        {:noreply, assign(socket, final_balance: result.final_balance, years: result.years)}
 
       {:error, _} ->
         {:noreply,

@@ -24,5 +24,13 @@
 </.simple_form>
 <%!-- Why does is take a change for the $ to show back up? --%>
 <div :if={@final_balance} class="mt-16 " id="final-balance">
+  <.header>Final Balance:</.header>
   <%= @final_balance %>
+</div>
+<div :if={@years} class="mt-16">
+  <.header>Compounded Years</.header>
+  <.table id="years" rows={@years}>
+    <:col :let={{_id, year}} label="Year"><%= year.year %></:col>
+    <:col :let={{_id, year}} label="Balance"><%= year.balance %></:col>
+  </.table>
 </div>
