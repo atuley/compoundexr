@@ -13,7 +13,7 @@ defmodule Compoundexr.Compound do
       %{valid?: true} = changeset ->
         {:ok, run_calculation(changeset)}
 
-      _ ->
+      _changeset ->
         {:error, :invalid_data}
     end
   end
@@ -22,6 +22,7 @@ defmodule Compoundexr.Compound do
     changeset
     |> Ecto.Changeset.apply_changes()
     |> convert_interest_rate()
+    |> convert_contribution_growth_rate()
     |> Calculator.execute()
   end
 
@@ -29,5 +30,15 @@ defmodule Compoundexr.Compound do
          %CalculationData{interest_rate: raw_interest_rate} = calculation_data
        ) do
     %CalculationData{calculation_data | interest_rate: raw_interest_rate / 100}
+  end
+
+  defp convert_contribution_growth_rate(
+         %CalculationData{contribution_growth_rate: raw_contribution_growth_rate} =
+           calculation_data
+       ) do
+    %CalculationData{
+      calculation_data
+      | contribution_growth_rate: raw_contribution_growth_rate / 100
+    }
   end
 end

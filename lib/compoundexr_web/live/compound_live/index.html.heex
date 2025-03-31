@@ -18,11 +18,16 @@
   <%= @form[:starting_balance].value %>
   <.input field={@form[:interest_rate]} type="number" label="Annual Return %" />
   <.input field={@form[:years]} type="number" label="Number of years" />
+  <.input field={@form[:contributions]} label="Annual Contributions" />
+  <.input
+    field={@form[:contribution_growth_rate]}
+    type="number"
+    label="Annual Contribution Growth %"
+  />
   <:actions>
     <.button phx-disable-with="Calculating...">Calculate</.button>
   </:actions>
 </.simple_form>
-<%!-- Why does is take a change for the $ to show back up? --%>
 <div :if={@final_balance} class="mt-16 " id="final-balance">
   <.header>Final Balance:</.header>
   <%= @final_balance %>
@@ -32,5 +37,7 @@
   <.table id="years" rows={@years}>
     <:col :let={{_id, year}} label="Year"><%= year.year %></:col>
     <:col :let={{_id, year}} label="Balance"><%= year.balance %></:col>
+    <:col :let={{_id, year}} label="Interest"><%= year.interest %></:col>
+    <:col :let={{_id, year}} label="Contributions"><%= year.contributions %></:col>
   </.table>
 </div>
