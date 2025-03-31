@@ -11,10 +11,14 @@ module.exports = {
     "../lib/*_web.ex",
     "../lib/*_web/**/*.*ex"
   ],
+  darkMode: 'class', // Enable dark mode with class strategy
   theme: {
     extend: {
       colors: {
         brand: "#FD4F00",
+        dark: {
+          DEFAULT: 'oklch(0.21 0.034 264.665)',
+        }
       }
     },
   },
