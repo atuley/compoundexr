@@ -24,6 +24,7 @@
     type="number"
     label="Annual Contribution Growth %"
   />
+  <.input field={@form[:tax_rate]} type="number" label="Annual Tax Rate %" />
   <:actions>
     <.button phx-disable-with="Calculating...">Calculate</.button>
   </:actions>
@@ -32,12 +33,30 @@
   <.header>Final Balance:</.header>
   <%= @final_balance %>
 </div>
+<div :if={@tax_adjusted_return} class="mt-16 " id="tax-adjusted-return">
+  <.header>Tax Adjusted Return:</.header>
+  <%= @tax_adjusted_return %>%
+</div>
 <div :if={@years} class="mt-16">
   <.header>Compounded Years</.header>
   <.table id="years" rows={@years}>
-    <:col :let={{_id, year}} label="Year"><%= year.year %></:col>
-    <:col :let={{_id, year}} label="Balance"><%= year.balance %></:col>
-    <:col :let={{_id, year}} label="Interest"><%= year.interest %></:col>
-    <:col :let={{_id, year}} label="Contributions"><%= year.contributions %></:col>
+    <:col :let={year} label="Year"><span id={"year-#{year.year}"}><%= year.year %></span></:col>
+    <:col :let={year} label="Balance">
+      <span id={"balance-#{year.year}"}><%= year.balance %></span>
+    </:col>
+    <:col :let={year} label="Interest">
+      <span id={"interest-#{year.year}"}><%= year.interest %></span>
+    </:col>
+    <:col :let={year} label="Taxes">
+      <span id={"taxes-#{year.year}"}><%= year.taxes %></span>
+    </:col>
+    <:col :let={year} label="Gain After Taxes">
+      <span id={"gain-after-taxes-#{year.year}"}>
+        <%= Money.subtract(year.interest, year.taxes) %>
+      </span>
+    </:col>
+    <:col :let={year} label="Contributions">
+      <span id={"contributions-#{year.year}"}><%= year.contributions %></span>
+    </:col>
   </.table>
 </div>

@@ -8,10 +8,20 @@ defmodule CompoundexrWeb.CompoundLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign_changeset(Compound.change_calculation_data(%{interest_rate: 0, years: 1}))
+     |> assign_changeset(
+       Compound.change_calculation_data(%{
+         interest_rate: 20,
+         years: 20,
+         contributions: 2_000_000,
+         contribution_growth_rate: 2,
+         tax_rate: 30,
+         starting_balance: 1_000_0000
+       })
+     )
      |> assign_form()
      |> assign_asset_options()
      |> assign(final_balance: nil)
+     |> assign(tax_adjusted_return: nil)
      |> assign(years: nil)}
   end
 
@@ -48,7 +58,12 @@ defmodule CompoundexrWeb.CompoundLive.Index do
   def handle_event("save", %{"calculation_data" => params}, socket) do
     case Compound.calculate(params) do
       {:ok, result} ->
-        {:noreply, assign(socket, final_balance: result.final_balance, years: result.years)}
+        {:noreply,
+         assign(socket,
+           final_balance: result.final_balance,
+           tax_adjusted_return: result.return_after_taxes,
+           years: result.years
+         )}
 
       {:error, _} ->
         {:noreply,
