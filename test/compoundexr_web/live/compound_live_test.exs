@@ -17,6 +17,14 @@ defmodule CompoundexrWeb.CompoundLiveTest do
   describe "Index" do
     setup [:log_in]
 
+    test "shows create asset link when user has no assets", %{conn: conn} do
+      {:ok, _index_live, html} = live(conn, ~p"/compound")
+
+      assert html =~ "No assets found"
+      assert html =~ "Create a New Asset"
+      assert html =~ ~p"/assets/new"
+    end
+
     test "calculates and displays compound interest over specified", %{conn: conn} do
       %Result{years: compounded_years, final_balance: final_balance} =
         Calculator.execute(%CalculationData{
