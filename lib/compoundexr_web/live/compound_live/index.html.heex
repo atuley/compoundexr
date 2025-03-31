@@ -1,62 +1,85 @@
 <.header>
   Compound Interest Calculator
 </.header>
-<.simple_form
-  for={@form}
-  id="compound-interest-form"
-  phx-change="validate"
-  phx-blur="validate"
-  phx-submit="save"
->
-  <.input
-    field={@form[:starting_balance]}
-    type="select"
-    prompt="Select asset"
-    options={@asset_options}
-    label="Starting Balance"
-  />
-  <%= @form[:starting_balance].value %>
-  <.input field={@form[:interest_rate]} type="number" label="Annual Return %" />
-  <.input field={@form[:years]} type="number" label="Number of years" />
-  <.input field={@form[:contributions]} label="Annual Contributions" />
-  <.input
-    field={@form[:contribution_growth_rate]}
-    type="number"
-    label="Annual Contribution Growth %"
-  />
-  <.input field={@form[:tax_rate]} type="number" label="Annual Tax Rate %" />
-  <:actions>
-    <.button phx-disable-with="Calculating...">Calculate</.button>
-  </:actions>
-</.simple_form>
-<div :if={@final_balance} class="mt-16 " id="final-balance">
-  <.header>Final Balance:</.header>
-  <%= @final_balance %>
-</div>
-<div :if={@tax_adjusted_return} class="mt-16 " id="tax-adjusted-return">
-  <.header>Tax Adjusted Return:</.header>
-  <%= @tax_adjusted_return %>%
-</div>
-<div :if={@years} class="mt-16">
-  <.header>Compounded Years</.header>
-  <.table id="years" rows={@years}>
-    <:col :let={year} label="Year"><span id={"year-#{year.year}"}><%= year.year %></span></:col>
-    <:col :let={year} label="Balance">
-      <span id={"balance-#{year.year}"}><%= year.balance %></span>
-    </:col>
-    <:col :let={year} label="Interest">
-      <span id={"interest-#{year.year}"}><%= year.interest %></span>
-    </:col>
-    <:col :let={year} label="Taxes">
-      <span id={"taxes-#{year.year}"}><%= year.taxes %></span>
-    </:col>
-    <:col :let={year} label="Gain After Taxes">
-      <span id={"gain-after-taxes-#{year.year}"}>
-        <%= Money.subtract(year.interest, year.taxes) %>
-      </span>
-    </:col>
-    <:col :let={year} label="Contributions">
-      <span id={"contributions-#{year.year}"}><%= year.contributions %></span>
-    </:col>
-  </.table>
+<div class="dark flex w-full gap-16">
+  <div class="w-1/4">
+    <.simple_form
+      for={@form}
+      id="compound-interest-form"
+      phx-change="validate"
+      phx-blur="validate"
+      phx-submit="save"
+    >
+      <%= if Enum.empty?(@asset_options) do %>
+        <div class="mt-2">
+          <.label>Starting Balance</.label>
+          <div class="mt-2 text-sm text-gray-300">
+            No assets found, please
+            <.button>
+              <.link href={~p"/assets/new"} class="text-blue-400 hover:text-blue-300">
+                Create a New Asset
+              </.link>
+            </.button>
+          </div>
+        </div>
+      <% else %>
+        <.input
+          field={@form[:starting_balance]}
+          type="select"
+          prompt="Select asset"
+          options={@asset_options}
+          label="Starting Balance"
+        />
+      <% end %>
+      <.input field={@form[:interest_rate]} type="number" label="Annual Return %" />
+      <.input field={@form[:years]} type="number" label="Number of years" />
+      <.input field={@form[:contributions]} label="Annual Contributions" />
+      <.input
+        field={@form[:contribution_growth_rate]}
+        type="number"
+        label="Annual Contribution Growth %"
+      />
+      <.input field={@form[:tax_rate]} type="number" label="Annual Tax Rate %" />
+      <:actions>
+        <.button phx-disable-with="Calculating...">Calculate</.button>
+      </:actions>
+    </.simple_form>
+  </div>
+  <div class="w-3/4">
+    <div class="flex justify-center gap-8">
+      <div :if={@final_balance} id="final-balance" class="text-center">
+        <.header>Final Balance:</.header>
+        <%= @final_balance %>
+      </div>
+      <div :if={@tax_adjusted_return} id="tax-adjusted-return" class="text-center">
+        <.header>Tax Adjusted Return:</.header>
+        <%= @tax_adjusted_return %>%
+      </div>
+    </div>
+    <div :if={@years} class="overflow-x-auto">
+      <.header>Breakdown</.header>
+      <.table id="years" rows={@years}>
+        <:col :let={year} label="Year">
+          <span id={"year-#{year.year}"}><%= year.year %></span>
+        </:col>
+        <:col :let={year} label="Balance">
+          <span id={"balance-#{year.year}"}><%= year.balance %></span>
+        </:col>
+        <:col :let={year} label="Interest">
+          <span id={"interest-#{year.year}"}><%= year.interest %></span>
+        </:col>
+        <:col :let={year} label="Taxes">
+          <span id={"taxes-#{year.year}"}><%= year.taxes %></span>
+        </:col>
+        <:col :let={year} label="Gain After Taxes">
+          <span id={"gain-after-taxes-#{year.year}"}>
+            <%= Money.subtract(year.interest, year.taxes) %>
+          </span>
+        </:col>
+        <:col :let={year} label="Contributions">
+          <span id={"contributions-#{year.year}"}><%= year.contributions %></span>
+        </:col>
+      </.table>
+    </div>
+  </div>
 </div>
