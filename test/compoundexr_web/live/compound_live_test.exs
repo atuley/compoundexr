@@ -24,7 +24,8 @@ defmodule CompoundexrWeb.CompoundLiveTest do
           interest_rate: 0.2,
           years: 20,
           contributions: ~M[0],
-          contribution_growth_rate: 0
+          contribution_growth_rate: 0,
+          tax_rate: 0
         })
 
       {:ok, index_live, _html} = live(conn, ~p"/compound")
@@ -37,12 +38,27 @@ defmodule CompoundexrWeb.CompoundLiveTest do
           "interest_rate" => "20",
           "years" => "20",
           "contributions" => "0",
-          "contribution_growth_rate" => "0"
+          "contribution_growth_rate" => "0",
+          "tax_rate" => "0"
         }
       })
 
-      Enum.map(compounded_years, fn {_year, data} ->
-        assert has_element?(index_live, "span", Money.to_string(data.balance))
+      Enum.map(compounded_years, fn year ->
+        assert has_element?(index_live, "#balance-#{year.year}", Money.to_string(year.balance))
+        assert has_element?(index_live, "#interest-#{year.year}", Money.to_string(year.interest))
+        assert has_element?(index_live, "#taxes-#{year.year}", Money.to_string(year.taxes))
+
+        assert has_element?(
+                 index_live,
+                 "#gain-after-taxes-#{year.year}",
+                 Money.to_string(Money.subtract(year.interest, year.taxes))
+               )
+
+        assert has_element?(
+                 index_live,
+                 "#contributions-#{year.year}",
+                 Money.to_string(year.contributions)
+               )
       end)
 
       assert has_element?(index_live, "#final-balance", Money.to_string(final_balance))
