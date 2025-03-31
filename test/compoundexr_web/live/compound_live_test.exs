@@ -22,7 +22,9 @@ defmodule CompoundexrWeb.CompoundLiveTest do
         Calculator.execute(%CalculationData{
           starting_balance: ~M[10000000],
           interest_rate: 0.2,
-          years: 20
+          years: 20,
+          contributions: ~M[0],
+          contribution_growth_rate: 0
         })
 
       {:ok, index_live, _html} = live(conn, ~p"/compound")
@@ -33,7 +35,9 @@ defmodule CompoundexrWeb.CompoundLiveTest do
         "calculation_data" => %{
           "starting_balance" => "100000",
           "interest_rate" => "20",
-          "years" => "20"
+          "years" => "20",
+          "contributions" => "0",
+          "contribution_growth_rate" => "0"
         }
       })
 
