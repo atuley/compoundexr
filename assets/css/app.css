@@ -3,3 +3,122 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+@layer base {
+  html {
+    @apply transition-colors duration-200;
+  }
+
+  html.dark {
+    background-color: oklch(0.21 0.034 264.665);
+    color: white;
+  }
+
+  body {
+    @apply bg-white text-gray-900 min-h-screen;
+  }
+
+  .dark body {
+    background-color: oklch(0.21 0.034 264.665);
+    color: white;
+  }
+
+  /* Dark mode overrides */
+  .dark .bg-white {
+    background-color: oklch(0.21 0.034 264.665);
+  }
+
+  .dark .text-gray-900 {
+    color: #f4f4f5;
+  }
+
+  .dark .text-zinc-600 {
+    color: #a1a1aa;
+  }
+
+  .dark .text-zinc-800 {
+    color: #e4e4e7;
+  }
+
+  /* Hover states */
+  .dark .hover\:text-gray-300:hover {
+    color: #d4d4d8;
+  }
+
+  /* Form elements */
+  .dark input {
+    background-color: oklch(0.15 0.034 264.665);
+    border-color: oklch(0.25 0.034 264.665);
+    color: #f4f4f5;
+  }
+
+  .dark select {
+    background-color: oklch(0.15 0.034 264.665);
+    border-color: oklch(0.25 0.034 264.665);
+    color: #f4f4f5;
+  }
+
+  .dark input:focus {
+    border-color: oklch(0.3 0.034 264.665);
+    box-shadow: 0 0 0 1px oklch(0.3 0.034 264.665);
+  }
+
+  .dark select {
+    background-color: oklch(0.15 0.034 264.665);
+    border-color: oklch(0.25 0.034 264.665);
+    color: #f4f4f5;
+  }
+
+  .dark select:focus {
+    border-color: oklch(0.3 0.034 264.665);
+    box-shadow: 0 0 0 1px oklch(0.3 0.034 264.665);
+  }
+
+  /* Table styles */
+  .dark table {
+    @apply min-w-full divide-y divide-gray-700;
+  }
+
+  .dark thead {
+    @apply bg-gray-800;
+  }
+
+  .dark th {
+    @apply px-3 py-3.5 text-left text-sm font-semibold text-gray-300;
+  }
+
+  .dark tbody {
+    @apply divide-y divide-gray-700 bg-gray-900;
+  }
+
+  .dark td {
+    @apply whitespace-nowrap px-3 py-4 text-sm text-gray-300;
+  }
+
+  .dark tr:hover {
+    @apply bg-gray-800;
+  }
+
+  /* Button styles */
+  .dark .bg-zinc-900 {
+    background-color: oklch(0.3 0.034 264.665);
+  }
+
+  .dark .hover\:bg-zinc-700:hover {
+    background-color: oklch(0.35 0.034 264.665);
+  }
+
+  /* Links */
+  .dark a {
+    color: #f4f4f5;
+  }
+
+  .dark a:hover {
+    color: #d4d4d8;
+  }
+
+  /* Form labels */
+  .dark label {
+    color: #f4f4f5;
+  }
+}
