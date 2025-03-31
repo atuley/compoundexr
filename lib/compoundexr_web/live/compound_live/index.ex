@@ -42,7 +42,7 @@ defmodule CompoundexrWeb.CompoundLive.Index do
     asset_options =
       socket.assigns.current_user.id
       |> Assets.list_assets()
-      |> Enum.map(&{&1.name, Money.to_string(&1.balance)})
+      |> Enum.map(&{"#{&1.name} - #{Money.to_string(&1.balance)}", Money.to_string(&1.balance)})
 
     assign(socket, asset_options: asset_options)
   end
