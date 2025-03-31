@@ -8,7 +8,8 @@ defmodule Compoundexr.Compound.Calculator do
         interest_rate: interest_rate,
         years: years,
         contributions: starting_contributions,
-        contribution_growth_rate: contribution_growth_rate
+        contribution_growth_rate: contribution_growth_rate,
+        tax_rate: tax_rate
       }) do
     Enum.reduce(
       1..years,
@@ -20,6 +21,9 @@ defmodule Compoundexr.Compound.Calculator do
            final_contribution: running_contributions
          } ->
         annual_interest = Money.multiply(running_account_balance, interest_rate)
+        taxes = Money.multiply(annual_interest, tax_rate)
+
+        interest_after_taxes = Money.subtract(annual_interest, taxes)
 
         annual_contributions_growth =
           if year == 1 do
@@ -29,20 +33,26 @@ defmodule Compoundexr.Compound.Calculator do
           end
 
         annual_contributions = Money.add(running_contributions, annual_contributions_growth)
+        return_after_taxes = interest_after_taxes.amount / running_account_balance.amount
 
-        growth = Money.add(annual_interest, annual_contributions)
+        growth = Money.add(interest_after_taxes, annual_contributions)
         balance = Money.add(running_account_balance, growth)
 
         %Result{
           years:
-            Map.put(years, year, %CompoundedYear{
-              year: year,
-              balance: balance,
-              interest: annual_interest,
-              contributions: annual_contributions
-            }),
+            years ++
+              [
+                %CompoundedYear{
+                  year: year,
+                  balance: balance,
+                  interest: annual_interest,
+                  contributions: annual_contributions,
+                  taxes: taxes
+                }
+              ],
           final_balance: balance,
-          final_contribution: annual_contributions
+          final_contribution: annual_contributions,
+          return_after_taxes: return_after_taxes
         }
       end
     )
