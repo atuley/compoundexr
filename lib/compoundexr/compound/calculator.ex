@@ -11,50 +11,70 @@ defmodule Compoundexr.Compound.Calculator do
         contribution_growth_rate: contribution_growth_rate,
         tax_rate: tax_rate
       }) do
-    Enum.reduce(
-      1..years,
-      %Result{final_balance: starting_balance, final_contribution: starting_contributions},
-      fn year,
-         %Result{
-           years: years,
-           final_balance: running_account_balance,
-           final_contribution: running_contributions
-         } ->
-        annual_interest = Money.multiply(running_account_balance, interest_rate)
-        taxes = Money.multiply(annual_interest, tax_rate)
+    # Create initial result
+    initial_result = %Result{
+      final_balance: starting_balance,
+      final_contribution: starting_contributions
+    }
 
-        interest_after_taxes = Money.subtract(annual_interest, taxes)
+    # Process each year
+    Enum.reduce(1..years, initial_result, fn year, result_acc ->
+      process_year(
+        year,
+        result_acc,
+        interest_rate,
+        contribution_growth_rate,
+        tax_rate
+      )
+    end)
+  end
 
-        annual_contributions_growth =
-          if year == 1 do
-            ~M[0]
-          else
-            Money.multiply(running_contributions, contribution_growth_rate)
-          end
+  # Process a single year of calculations
+  defp process_year(
+         year,
+         %Result{final_balance: balance, final_contribution: contributions} = result_acc,
+         interest_rate,
+         contribution_growth_rate,
+         tax_rate
+       ) do
+    # Calculate interest and taxes
+    interest = Money.multiply(balance, interest_rate)
+    taxes = Money.multiply(interest, tax_rate)
+    interest_after_taxes = Money.subtract(interest, taxes)
 
-        annual_contributions = Money.add(running_contributions, annual_contributions_growth)
-        return_after_taxes = interest_after_taxes.amount / running_account_balance.amount
-
-        growth = Money.add(interest_after_taxes, annual_contributions)
-        balance = Money.add(running_account_balance, growth)
-
-        %Result{
-          years:
-            years ++
-              [
-                %CompoundedYear{
-                  year: year,
-                  balance: balance,
-                  interest: annual_interest,
-                  contributions: annual_contributions,
-                  taxes: taxes
-                }
-              ],
-          final_balance: balance,
-          final_contribution: annual_contributions,
-          return_after_taxes: return_after_taxes
-        }
+    # Calculate contributions
+    contribution_growth =
+      if year == 1 do
+        ~M[0]
+      else
+        Money.multiply(contributions, contribution_growth_rate)
       end
-    )
+
+    updated_contributions = Money.add(contributions, contribution_growth)
+
+    # Calculate return and growth
+    return_after_taxes = interest_after_taxes.amount / balance.amount
+    growth = Money.add(interest_after_taxes, updated_contributions)
+
+    # Calculate updated balance
+    updated_balance = Money.add(balance, growth)
+
+    # Create compounded year record
+    compounded_year = %CompoundedYear{
+      year: year,
+      balance: updated_balance,
+      interest: interest,
+      contributions: updated_contributions,
+      taxes: taxes
+    }
+
+    # Update result
+    %Result{
+      result_acc
+      | years: result_acc.years ++ [compounded_year],
+        final_balance: updated_balance,
+        final_contribution: updated_contributions,
+        return_after_taxes: return_after_taxes
+    }
   end
 end
