@@ -87,5 +87,40 @@ defmodule CompoundexrWeb.CompoundLiveTest do
 
       assert has_element?(index_live, "#flash", "Please correct errors in calculation data.")
     end
+
+    test "displays validation errors for invalid money amounts", %{conn: conn} do
+      {:ok, index_live, _html} = live(conn, ~p"/compound")
+      # Test negative contributions
+      index_live
+      |> form("#compound-interest-form")
+      |> render_change(%{
+        "calculation_data" => %{
+          "starting_balance" => "100000",
+          "interest_rate" => "20",
+          "years" => "20",
+          "contributions" => "-100",
+          "contribution_growth_rate" => "0",
+          "tax_rate" => "0"
+        }
+      })
+
+      assert render(index_live) =~ "must be greater than or equal to 0"
+
+      # Test contributions over 1 billion
+      index_live
+      |> form("#compound-interest-form")
+      |> render_change(%{
+        "calculation_data" => %{
+          "starting_balance" => "100000",
+          "interest_rate" => "20",
+          "years" => "20",
+          "contributions" => "1000000001",
+          "contribution_growth_rate" => "0",
+          "tax_rate" => "0"
+        }
+      })
+
+      assert render(index_live) =~ "must be less than or equal to 1,000,000,000"
+    end
   end
 end

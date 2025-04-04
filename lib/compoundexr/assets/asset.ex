@@ -1,7 +1,7 @@
 defmodule Compoundexr.Assets.Asset do
   use Ecto.Schema
   import Ecto.Changeset
-
+  alias Compoundexr.Validations.MoneyValidations
   alias Compoundexr.Accounts.User
 
   schema "assets" do
@@ -17,5 +17,6 @@ defmodule Compoundexr.Assets.Asset do
     asset
     |> cast(attrs, [:name, :balance, :user_id])
     |> validate_required([:name, :balance, :user_id])
+    |> MoneyValidations.validate_money(:balance)
   end
 end
