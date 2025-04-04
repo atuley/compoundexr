@@ -1,4 +1,8 @@
 # Compoundexr
+Click the thumbnail below for a demo video
+[![Watch the video](https://img.youtube.com/vi/Ytot10UHN4E/maxresdefault.jpg)](https://www.youtube.com/watch?v=Ytot10UHN4E)
+
+Install Elixir and Erlang first. I use https://asdf-vm.com/ to manage versions.
 
 To start your Phoenix server:
 
